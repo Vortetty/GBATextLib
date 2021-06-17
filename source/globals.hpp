@@ -3,7 +3,10 @@
     #include <math.h>
     #include <climits>
     #include <cstring>
-    #include "./benchmark/include/libsrc/cycleclock.hpp"
+    #include <initializer_list>
+
+    #define color uint16_t
+    #define colorSet std::initializer_list<uint16_t>
 
     unsigned short* videoBuffer = (unsigned short*)0x06000000;
     

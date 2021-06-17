@@ -1,10 +1,16 @@
 #include "./fontBitmap.hpp"
 #include "./globals.hpp"
+#include <vector>
 
 namespace font_5x8 {
     std::string author = "Vortetty/Winter";
     Vector2 charSize = {5, 8};
     Vector2 charSizeOnBitmap = {7, 10};
+
+    struct string_draw_return {
+        Vector2 newPos;
+        int drawnChars;
+    };
 
     void init(){
         initFont();
@@ -18,7 +24,7 @@ namespace font_5x8 {
         }
     }
 
-    void drawCharacter(int drawx, int drawy, uint8_t c){
+    void drawCharacter(int drawx, int drawy, uint8_t c, color fg=0xffff, color bg=0x0000){
         Vector2 pos = int2Vec(c, 16);
 
         for (int x = 0; x < charSize.x; x++){
@@ -30,13 +36,13 @@ namespace font_5x8 {
                             (y+1) + pos.y*charSizeOnBitmap.y,
                             bitmapDimensions.x
                         )
-                    ] ? 0xffff : 0x0000);
+                    ] ? fg : bg);
                 }
             }
         }
     }
 
-    void drawString(int drawx, int drawy, std::string str, int charSpacing = 1, bool convertNewlines = true, bool autoBreakAtEnd = true){
+    string_draw_return drawString(int drawx, int drawy, std::string str, color fg=0xffff, color bg=0x0000, int charSpacing = 1, bool convertNewlines = true, bool autoBreakAtEnd = true){
         int origx = drawx;
         int drawnChars = 0;
         for (auto &chr : str){
@@ -47,22 +53,82 @@ namespace font_5x8 {
             } else if (drawnChars >= (std::floor(240.0/(charSize.x+charSpacing))) && autoBreakAtEnd){
                 drawy += charSize.y + charSpacing;
                 drawx = origx + charSize.x+charSpacing;
-                drawCharacter(origx, drawy, chr);
+                drawCharacter(origx, drawy, chr, fg, bg);
                 drawnChars = 1;
             } else {
-                drawCharacter(drawx, drawy, chr);
+                drawCharacter(drawx, drawy, chr, fg, bg);
+                drawNxN(drawx+charSize.x, drawy, charSpacing, charSize.y, bg);
+                drawNxN(drawx, drawy+charSize.y, charSize.x+1, charSpacing, bg);
                 drawx += charSize.x+charSpacing;
                 drawnChars++;
             }
         }
+
+        return {{drawx, drawy}, drawnChars};
     }
 
-    void testAllChars(bool convertNewlines = false){
+    string_draw_return drawString(int drawx, int drawy, std::string str, std::vector<color> fg, std::vector<color> bg, int charSpacing = 1, bool convertNewlines = true, bool autoBreakAtEnd = true){
+        int origx = drawx;
+        int drawnChars = 0;
+        int counter = 0;
+        for (auto &chr : str){
+            if (chr == '\n' && convertNewlines){
+                drawy += charSize.y + charSpacing;
+                drawx = origx;
+                drawnChars = 0;
+            } else if (drawnChars >= (std::floor(240.0/(charSize.x+charSpacing))) && autoBreakAtEnd){
+                drawy += charSize.y + charSpacing;
+                drawx = origx + charSize.x+charSpacing;
+                drawCharacter(origx, drawy, chr, fg[counter], bg[counter]);
+                drawnChars = 1;
+                counter++;
+            } else {
+                drawCharacter(drawx, drawy, chr, fg[counter], bg[counter]);
+                drawNxN(drawx+charSize.x, drawy, charSpacing, charSize.y, bg[counter]);
+                drawNxN(drawx, drawy+charSize.y, charSize.x+1, charSpacing, bg[counter]);
+                drawx += charSize.x+charSpacing;
+                drawnChars++;
+                counter++;
+            }
+        }
+        
+        return {{drawx, drawy}, drawnChars};
+    }
+
+    string_draw_return drawString(int drawx, int drawy, std::string str, color(*fg)(int,char), color(*bg)(int,char), int charSpacing = 1, bool convertNewlines = true, bool autoBreakAtEnd = true){
+        int origx = drawx;
+        int drawnChars = 0;
+        int counter = 0;
+        for (auto &chr : str){
+            if (chr == '\n' && convertNewlines){
+                drawy += charSize.y + charSpacing;
+                drawx = origx;
+                drawnChars = 0;
+            } else if (drawnChars >= (std::floor(240.0/(charSize.x+charSpacing))) && autoBreakAtEnd){
+                drawy += charSize.y + charSpacing;
+                drawx = origx + charSize.x+charSpacing;
+                drawCharacter(origx, drawy, chr, fg(counter, chr), bg(counter, chr));
+                drawnChars = 1;
+                counter++;
+            } else {
+                drawCharacter(drawx, drawy, chr, fg(counter, chr), bg(counter, chr));
+                drawNxN(drawx+charSize.x, drawy, charSpacing, charSize.y, bg(counter, chr));
+                drawNxN(drawx, drawy+charSize.y, charSize.x+1, charSpacing, bg(counter, chr));
+                drawx += charSize.x+charSpacing;
+                drawnChars++;
+                counter++;
+            }
+        }
+        
+        return {{drawx, drawy}, drawnChars};
+    }
+
+    void testAllChars(bool convertNewlines = false, color fg=0xffff, color bg=0x0000){
         std::string str = "";
         for (int i = 0; i < 256; i++){
             str.append({(char)i});
         }
-        drawString(0, 0, str, 1, convertNewlines);
+        drawString(0, 0, str, fg, bg, 1, convertNewlines);
     }
 
     void helloWorld(int x, int y){

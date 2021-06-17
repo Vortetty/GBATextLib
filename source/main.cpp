@@ -15,6 +15,7 @@
 #include <vector>
 #include "./font.hpp"
 #include "./globals.hpp"
+#include "./colorCyclers.hpp"
 
 #define WHITE 0xffff
 #define BLACK 0x0000
@@ -46,20 +47,54 @@ int main(){
     sleep(2500);
 
     drawNxN(0, 0, 240, 160, BLACK); // Clear Back
-    font_5x8::drawString(0, 0, "Hello, World!\nI was printed on the gba!", 1, false); // Draw "Hello, World!\nI was printed on the gba!" at 0, 0 but don't convert newlines
+    font_5x8::drawString(0, 0, "Hello, World!\nI was printed on the gba!", 0xffff, 0x0000, 1, false); // Draw "Hello, World!\nI was printed on the gba!" at 0, 0 but don't convert newlines
     sleep(2500);
 
     drawNxN(0, 0, 240, 160, BLACK); // Clear Back
-    font_5x8::drawString(0, 0, "Hello, World! I am here to test the auto-break feature!", 1, false); // Test auto-break
+    font_5x8::drawString(0, 0, "Hello, World! I am here to test the auto-break feature!", 0xffff, 0x0000); // Test auto-break
     sleep(2500);
 
     drawNxN(0, 0, 240, 160, BLACK); // Clear Back
-    font_5x8::drawString(0, 0, "Hello, World! I am here to test clipping of text!", 1, false, false); // Test clipping
+    font_5x8::drawString(0, 0, "Hello, World! I am here to test clipping of text!", 0xffff, 0x0000, 1, false, false); // Test clipping
     sleep(2500);
 
     drawNxN(0, 0, 240, 160, BLACK); // Clear Back
-    font_5x8::testAllChars(); // Test all the characters
+    font_5x8::drawString(0, 0, "Hello, World! I am colored!", RGBToColor(0xff0033), RGBToColor(0x3300ff)); // Test basic colors
     sleep(2500);
+
+    drawNxN(0, 0, 240, 160, BLACK); // Clear Back
+    font_5x8::drawString(0, 0, "Rainbow!", {RGBToColor(0xff0000), 
+                                            RGBToColor(0xff7f00), 
+                                            RGBToColor(0xffff00), 
+                                            RGBToColor(0x00ff00), 
+                                            RGBToColor(0x0000ff), 
+                                            RGBToColor(0x4b0082), 
+                                            RGBToColor(0x9400d3)}, 
+                                           {0x0000,
+                                            0x0000,
+                                            0x0000,
+                                            0x0000,
+                                            0x0000,
+                                            0x0000,
+                                            0x0000,
+                                            0x0000}); // Test initializer list of colors
+    sleep(2500);
+
+    drawNxN(0, 0, 240, 160, BLACK); // Clear Back
+    font_5x8::drawString(0, 0, "ROYGBIV ROYGBIV ROYGBIV Hello, World! I am colored by these generator functions:\n\n\
+color rainbowGenerator(int index, char character){\n\
+    if (character == ' ') rainbowOffset += 1;\n\
+    return rainbowColorSet[wrapInt(index-rainbowOffset, 0, 7)];\n\
+}\n\
+\n\
+color allBlackGenerator(int index, char character){\n\
+    return 0x0000;\n\
+}", rainbowGenerator, allBlackGenerator); // Test basic colors
+    sleep(5000);
+
+    //drawNxN(0, 0, 240, 160, BLACK); // Clear Back
+    //font_5x8::testAllChars(); // Test all the characters
+    //sleep(2500);
 
     uint8_t page = 0; // Page we are on
     unsigned short keys;
