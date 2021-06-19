@@ -2,6 +2,7 @@
 #define colorCyclers
     #include "./globals.hpp"
     #include <vector>
+    #include "./font.hpp"
 
     std::vector<color> rainbowColorSet = {RGBToColor(0xff0000), 
                                           RGBToColor(0xff7f00), 
@@ -11,14 +12,6 @@
                                           RGBToColor(0x4b0082), 
                                           RGBToColor(0x9400d3)};
 
-    int rainbowOffset = 0;
-
-    color rainbowGenerator(int index, char character){
-        if (character == ' ') rainbowOffset += 1;
-        return rainbowColorSet[wrapInt(index-rainbowOffset, 0, 7)];
-    }
-
-    color allBlackGenerator(int index, char character){
-        return 0x0000;
-    }
+    colorProvider rainbowGenerator = font_5x8::genCyclingColorProvider(rainbowColorSet);
+    colorProvider allBlackGenerator = font_5x8::genSingleColorProvider(0x0000);
 #endif

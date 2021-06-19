@@ -63,14 +63,14 @@ int main(){
     sleep(2500);
 
     drawNxN(0, 0, 240, 160, BLACK); // Clear Back
-    font_5x8::drawString(0, 0, "Rainbow!", {RGBToColor(0xff0000), 
+    font_5x8::drawString(0, 0, "Rainbow!", (std::vector<color>){RGBToColor(0xff0000), 
                                             RGBToColor(0xff7f00), 
                                             RGBToColor(0xffff00), 
                                             RGBToColor(0x00ff00), 
                                             RGBToColor(0x0000ff), 
                                             RGBToColor(0x4b0082), 
                                             RGBToColor(0x9400d3)}, 
-                                           {0x0000,
+                                           (std::vector<color>){0x0000,
                                             0x0000,
                                             0x0000,
                                             0x0000,
@@ -82,14 +82,17 @@ int main(){
 
     drawNxN(0, 0, 240, 160, BLACK); // Clear Back
     font_5x8::drawString(0, 0, "ROYGBIV ROYGBIV ROYGBIV Hello, World! I am colored by these generator functions:\n\n\
-color rainbowGenerator(int index, char character){\n\
-    if (character == ' ') rainbowOffset += 1;\n\
-    return rainbowColorSet[wrapInt(index-rainbowOffset, 0, 7)];\n\
-}\n\
+std::vector<color> rainbowColorSet = {\n\
+    RGBToColor(0xff0000), \n\
+    RGBToColor(0xff7f00), \n\
+    RGBToColor(0xffff00), \n\
+    RGBToColor(0x00ff00), \n\
+    RGBToColor(0x0000ff), \n\
+    RGBToColor(0x4b0082), \n\
+    RGBToColor(0x9400d3)};\n\
 \n\
-color allBlackGenerator(int index, char character){\n\
-    return 0x0000;\n\
-}", rainbowGenerator, allBlackGenerator); // Test basic colors
+colorProvider rainbowGenerator = font_5x8::genCyclingColorProvider(rainbowColorSet);\n\
+colorProvider allBlackGenerator = font_5x8::genSingleColorProvider(0x0000);", rainbowGenerator, allBlackGenerator); // Test basic colors
     sleep(5000);
 
     //drawNxN(0, 0, 240, 160, BLACK); // Clear Back

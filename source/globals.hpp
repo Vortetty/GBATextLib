@@ -6,23 +6,23 @@
     #include <initializer_list>
 
     #define color uint16_t
-    #define colorSet std::initializer_list<uint16_t>
-
+    #define colorSet std::vector<color>
+    
     unsigned short* videoBuffer = (unsigned short*)0x06000000;
     
     struct Vector2 {
-        uint_fast32_t x;
-        uint_fast32_t y; 
+        int_fast32_t x;
+        int_fast32_t y; 
     };
 
-    int Vec2Int(Vector2 vec2, uint_fast32_t width){ // 2D position to 1d index
+    int Vec2Int(Vector2 vec2, int_fast32_t width){ // 2D position to 1d index
         return vec2.x + vec2.y * width;
     }
-    uint_fast32_t Vec2Int(uint_fast32_t x, uint_fast32_t y, uint_fast32_t width){ // 2D position to 1d index
+    uint_fast32_t Vec2Int(int_fast32_t x, int_fast32_t y, int_fast32_t width){ // 2D position to 1d index
         return x + y * width;
     }
 
-    Vector2 int2Vec(uint_fast32_t idx, uint_fast32_t width){ // 1D index to 2D position
+    Vector2 int2Vec(int_fast32_t idx, int_fast32_t width){ // 1D index to 2D position
         return {
             idx % width,
             idx / width
