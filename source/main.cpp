@@ -90,7 +90,7 @@ std::vector<color> rainbowColorSet = {\n\
     RGBToColor(0x0000ff), \n\
     RGBToColor(0x4b0082), \n\
     RGBToColor(0x9400d3)};\n\
- \n\
+\n\
 colorProvider rainbowGenerator = font_5x8::genCyclingColorProvider(rainbowColorSet);\n\
 colorProvider allBlackGenerator = font_5x8::genSingleColorProvider(0x0000);", rainbowGenerator, allBlackGenerator); // Test basic colors
     sleep(5000);
