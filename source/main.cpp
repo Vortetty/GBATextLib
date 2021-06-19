@@ -95,25 +95,9 @@ colorProvider rainbowGenerator = font_5x8::genCyclingColorProvider(rainbowColorS
 colorProvider allBlackGenerator = font_5x8::genSingleColorProvider(0x0000);", rainbowGenerator, allBlackGenerator); // Test basic colors
     sleep(5000);
 
-    //drawNxN(0, 0, 240, 160, BLACK); // Clear Back
-    //font_5x8::testAllChars(); // Test all the characters
-    //sleep(2500);
-
-    uint8_t page = 0; // Page we are on
-    unsigned short keys;
-    // ------------------------------------------------------------------------
-
-    // ✧ The game ✧
-    // ------------------------------------------------------------------------
-    while (true){ // Run until game should exit
-        scanKeys(); // Populate keys pressed
-        keys = keysDown(); // Gets pressed keys 
-        if (isPressed(keys, KEYPAD_BITS::KEY_L)) page--; // if left bumper is pressed decrement page
-        if (isPressed(keys, KEYPAD_BITS::KEY_R)) page++; // if right bumper is pressed increment page
-
-
-    }
-    // ------------------------------------------------------------------------
-
+    drawNxN(0, 0, 240, 160, BLACK); // Clear Back
+    font_5x8::testAllChars(); // Test all the characters
+    sleep(2500);
+    
     return 0; // Have to return 0
 }
